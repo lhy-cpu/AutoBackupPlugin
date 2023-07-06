@@ -1,0 +1,13 @@
+name: AutoBackupPlugin
+version: '${project.version}'
+main: work.lhye.autobackupplugin.AutoBackupPlugin
+api-version: '1.16'
+author: lhye200
+commands:
+  backup:
+    description: Use this command to handle AutoBackupPlugin.Only Operators can use this.
+    usage: /backup saveNow
+      /backup reloadConfig
+      /backup set maxWorldNum <int>
+      /backup set saveIntervalTicks <int>
+      /backup set enableZip <boolean>
