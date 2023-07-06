@@ -72,11 +72,9 @@ public class ConfHandler {
     }
 
     public void loadDefaultConfig(String rootPath){
-        Map<String,Object> defConf = new HashMap<String,Object>();
-        defConf.put("saveFolderPath", Paths.get(rootPath, "worldBackup").toString());
-        defConf.put("saveIntervalTicks",12000);
-        defConf.put("maxWorldNum",0);
-        defConf.put("enableZip",false);
-        this.loadConfig(defConf);
+        this.saveFolderPath = Paths.get(rootPath, "worldBackup").toString();
+        this.saveIntervalTicks = 12000;
+        this.maxWorldNum = 0;
+        this.enableZip = false;
     }
 }
