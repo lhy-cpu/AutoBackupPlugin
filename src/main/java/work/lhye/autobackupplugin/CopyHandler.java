@@ -12,15 +12,14 @@ import java.util.zip.ZipOutputStream;
 
 public class CopyHandler {
 
-    public static void compressFilesToZip(String originFolderPath,String zipToFolderPath) {
+    public static void compressFilesToZip(String originFolderPath,String zipToFolderPath,String zipName) {
         File tz = new File(zipToFolderPath);
         if(!tz.exists()){
             tz.mkdirs();
         }
         List<String> files = getFiles(originFolderPath);
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH_mm_ss.SSS");
-            ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(Paths.get(zipToFolderPath,sdf.format(new Date())).toString()+"_world.zip"));
+            ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(Paths.get(zipToFolderPath,zipName).toString()));
             for(String tFile : files){
                 if(!tFile.endsWith("session.lock")){
                     String substring = tFile.substring(originFolderPath.length()+1, tFile.length());
@@ -44,11 +43,9 @@ public class CopyHandler {
 
     public static void copyDir(String originFolderPath,String copyToFolderPath){
         List<String> files = getFiles(originFolderPath);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH_mm_ss.SSS");
-        String timeStr = sdf.format(new Date()).toString();
         for(String tFile : files){
             if(!tFile.endsWith("session.lock")) {
-                copyFile(tFile,Paths.get(copyToFolderPath,timeStr,tFile.substring(originFolderPath.length(), tFile.length())).toString());
+                copyFile(tFile,Paths.get(copyToFolderPath,tFile.substring(originFolderPath.length(), tFile.length())).toString());
             }
         }
     }
@@ -64,6 +61,21 @@ public class CopyHandler {
                 files.add(f.getPath());
             }
         }
+        return files;
+    }
+
+    public static List<String> getFilesAndFolders(String folderPath){
+        List<String> files = new ArrayList<>();
+        File fFiles = new File(folderPath);
+        for(File f : fFiles.listFiles()){
+            if(f.isDirectory()){
+                files.addAll(getFilesAndFolders(f.getPath()));
+            }
+            else{
+                files.add(f.getPath());
+            }
+        }
+        files.add(folderPath);
         return files;
     }
 
@@ -85,5 +97,12 @@ public class CopyHandler {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public static void deleteDir(String folderPath){
+        List<String> files = getFilesAndFolders(folderPath);
+        for(String f : files){
+            (new File(f)).delete();
+        }
     }
 }

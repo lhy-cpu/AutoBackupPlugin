@@ -6,6 +6,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Timer extends BukkitRunnable {
     private Plugin plugin;
@@ -27,12 +29,17 @@ public class Timer extends BukkitRunnable {
             this.conf.saveFolderPath = Paths.get(this.rootPath, "worldBackup").toString();
             this.conf.saveConfig();
         }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH_mm_ss.SSS");
+        String timeStr = sdf.format(new Date()).toString();
         if(this.conf.enableZip){
-            CopyHandler.compressFilesToZip(Paths.get(this.rootPath,"world").toString(),Paths.get(this.conf.saveFolderPath,"zip").toString());
+            String tmpF = Paths.get(this.conf.saveFolderPath,"zip","tmp").toString();
+            CopyHandler.copyDir(Paths.get(this.rootPath,"world").toString(),tmpF);
+            CopyHandler.compressFilesToZip(tmpF,Paths.get(this.conf.saveFolderPath,"zip").toString(),timeStr+"_world.zip");
+            CopyHandler.deleteDir(tmpF);
             this.backupFilesManager.checkZipBackup();
         }
         else{
-            CopyHandler.copyDir(Paths.get(this.rootPath,"world").toString(),Paths.get(this.conf.saveFolderPath,"raw").toString());
+            CopyHandler.copyDir(Paths.get(this.rootPath,"world").toString(),Paths.get(this.conf.saveFolderPath,"raw",timeStr).toString());
             this.backupFilesManager.checkRawBackup();
         }
 

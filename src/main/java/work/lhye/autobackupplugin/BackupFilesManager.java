@@ -30,26 +30,8 @@ public class BackupFilesManager {
             File [] files = file.listFiles();
             Arrays.sort(files, Comparator.reverseOrder());
             for(int i=this.conf.maxWorldNum;i<files.length;i++){
-                List<String> tmp = this.getFilesAndFolders(files[i].getPath());
-                for(String tf : tmp){
-                    (new File(tf)).delete();
-                }
+                CopyHandler.deleteDir(files[i].getPath());
             }
         }
-    }
-
-    public List<String> getFilesAndFolders(String folderPath){
-        List<String> files = new ArrayList<>();
-        File fFiles = new File(folderPath);
-        for(File f : fFiles.listFiles()){
-            if(f.isDirectory()){
-                files.addAll(this.getFilesAndFolders(f.getPath()));
-            }
-            else{
-                files.add(f.getPath());
-            }
-        }
-        files.add(folderPath);
-        return files;
     }
 }
